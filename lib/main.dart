@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './question.dart';
+import 'answer.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,6 +15,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final questions = const [
+    {
+      'questionText': 'What\'s your favorit color?',
+      'answer': ['Black', 'Gree', 'Red', 'White']
+    },
+    {
+      'questionText': 'What\'s yout favorit animal?',
+      'answer': ['Rabbit', 'Snake', 'Elephant', 'Line']
+    },
+    {
+      'questionText': 'Who is yout favorit instructor?',
+      'answer': ['Max', 'Max', 'Max', 'Max']
+    }
+  ];
+
   var _questionIndex = 0;
 
   void _answerQuestion() {
@@ -22,28 +38,24 @@ class _MyAppState extends State<MyApp> {
     });
     print(_questionIndex);
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      'What\'s your favorit color?',
-      'What\'s yout favorit animal?'
-    ];
     return MaterialApp(
         home: Scaffold(
             appBar: AppBar(title: Text('My first App')),
-            body: Column(
-              children: [
-                Question(questions[_questionIndex]),
-                RaisedButton(
-                  child: Text('Answer 1'),
-                  onPressed: _answerQuestion,
-                ),
-                RaisedButton(child: Text('Answer 2'), onPressed: () => print('Answer 2 chosen!')),
-                RaisedButton(child: Text('Answer 3m'), onPressed: () {
-                  print('Answer 3 chosen!');
-                }),
-              ],
-            )));
+            body: questions.length > _questionIndex
+                ? Column(
+                    children: [
+                      Question(questions[_questionIndex]['questionText']),
+                      ...(questions[_questionIndex]['answer'] as List<String>)
+                          .map((answer) {
+                        return Answer(answer, _answerQuestion);
+                      }).toList()
+                    ],
+                  )
+                : Center(
+                    child: Text('No more questions'),
+                  )));
   }
 }
