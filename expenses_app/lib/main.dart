@@ -32,7 +32,7 @@ class MyHomePage extends StatelessWidget {
         title: Text('Flutter App'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+//        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
@@ -41,6 +41,28 @@ class MyHomePage extends StatelessWidget {
               color: Colors.blue,
               child: Text('CHART!'),
               elevation: 50, // box-shadow
+            ),
+          ),
+          Card(
+            elevation: 5,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(labelText: 'Title'),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: 'Amount'),
+                  ),
+                  FlatButton(
+                    child: Text('Add transaction'),
+                    textColor: Colors.purple,
+                    onPressed: () => {},
+                  )
+                ],
+              ),
             ),
           ),
           Column(
@@ -67,8 +89,15 @@ class MyHomePage extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(tx.title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                              Text(DateFormat('yyyy-MM-dd').format(tx.date), style: TextStyle(color: Colors.grey),)
+                              Text(
+                                tx.title,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                DateFormat('yyyy-MM-dd').format(tx.date),
+                                style: TextStyle(color: Colors.grey),
+                              )
                             ],
                           ),
                         ],
