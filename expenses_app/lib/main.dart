@@ -14,7 +14,18 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           accentColor: Colors.amber,
           textSelectionColor: Colors.red,
-      ),
+          textTheme: ThemeData.light().textTheme.copyWith(
+          title: TextStyle(
+              fontFamily: 'Quicksand',
+              fontSize: 18,
+              fontWeight: FontWeight.bold)),
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                  title: TextStyle(
+                      fontFamily: 'OpenSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold))),
+          fontFamily: 'Quicksand'),
       home: MyHomePage(),
     );
   }
@@ -57,23 +68,26 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _startAddNewTransaction(BuildContext ctx) {
-    showModalBottomSheet(context: ctx, builder: (bCtx) {
-      return GestureDetector(
-        onTap: () {},
-        child: NewTransaction(_addNewTransaction),
-        behavior: HitTestBehavior.opaque,
-      );
-    });
+    showModalBottomSheet(
+        context: ctx,
+        builder: (bCtx) {
+          return GestureDetector(
+            onTap: () {},
+            child: NewTransaction(_addNewTransaction),
+            behavior: HitTestBehavior.opaque,
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme
-            .of(context)
-            .primaryColor,
-        title: Text('Personal Expenses'),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(
+          'Personal Expenses',
+          style: TextStyle(fontFamily: 'OpenSans'),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
@@ -89,9 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
               width: double.infinity,
               child: Card(
-                color: Theme
-                    .of(context)
-                    .primaryColor,
+                color: Theme.of(context).primaryColor,
                 child: Text('CHART!'),
                 elevation: 5,
               ),
