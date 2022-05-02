@@ -19,15 +19,17 @@ class MyApp extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(color: Colors.amber, border: Border.all()),
           alignment: Alignment.center,
-          width: 200,
-          height: 100,
+          // width: 200,
+          // height: 100,
           padding: EdgeInsets.all(16),
           margin: EdgeInsets.all(30),
-          child: Text('Tap + to increment',
-            style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 30)),),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+            Icon(Icons.add, size: 40, color: Colors.red,),
+            Icon(Icons.add, size: 200, color: Colors.green,),
+            Icon(Icons.add, size: 40, color: Colors.yellow,),
+          ],)),
         // body: Center(
         //   child: ,
         // ),
