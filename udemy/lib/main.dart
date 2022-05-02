@@ -16,77 +16,16 @@ class MyApp extends StatelessWidget {
           title: Text('Counter'),
         ),
         backgroundColor: Colors.indigo,
-        body: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('Tap + to increment'),
-              CounterWidget(),
-              Text('Tap - to decriment'),
-            ],
-          ),
-        ),
+        body: Padding(padding: EdgeInsets.all(60),
+        child: Text('Tap + to increment',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 30)),),
+        // body: Center(
+        //   child: ,
+        // ),
       ),
     );
-  }
-}
-
-class CounterWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return _CounterWidgetState();
-  }
-}
-
-class _CounterWidgetState extends State<CounterWidget> {
-  int _state = 0;
-
-  @override
-  void initState() {
-    _state = 0;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Container(
-      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
-      child: Container(
-        color: Colors.white,
-        width: 100,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              icon: Icon(Icons.remove),
-              onPressed: () {
-                decrement();
-              },
-            ),
-            Text('${_state}'),
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                increment();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  increment() {
-    setState(() {
-      _state++;
-    });
-  }
-
-  decrement() {
-    setState(() {
-      _state--;
-    });
   }
 }
