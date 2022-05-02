@@ -16,8 +16,14 @@ class MyApp extends StatelessWidget {
           title: Text('Counter'),
         ),
         backgroundColor: Colors.indigo,
-        body: Padding(padding: EdgeInsets.all(60),
-        child: Text('Tap + to increment',
+        body: Container(
+          decoration: BoxDecoration(color: Colors.amber, border: Border.all()),
+          alignment: Alignment.center,
+          width: 200,
+          height: 100,
+          padding: EdgeInsets.all(16),
+          margin: EdgeInsets.all(30),
+          child: Text('Tap + to increment',
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
