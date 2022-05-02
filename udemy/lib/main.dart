@@ -16,20 +16,12 @@ class MyApp extends StatelessWidget {
           title: Text('Counter'),
         ),
         backgroundColor: Colors.indigo,
-        body: Container(
-          decoration: BoxDecoration(color: Colors.amber, border: Border.all()),
-          alignment: Alignment.center,
-          // width: 200,
-          // height: 100,
-          padding: EdgeInsets.all(16),
-          margin: EdgeInsets.all(30),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-            Icon(Icons.add, size: 40, color: Colors.red,),
-            Icon(Icons.add, size: 200, color: Colors.green,),
-            Icon(Icons.add, size: 40, color: Colors.yellow,),
-          ],)),
+        body: Row(children: [
+          Expanded(flex: 2,child: Image.network('https://angularscript.com/wp-content/uploads/2015/07/Angularjs-SVG-Icon-Directive.jpg')),
+          Expanded(flex: 3,child: Container(padding: EdgeInsets.all(30), color: Colors.yellow, child: Text('1'),)),
+          Expanded(flex: 2, child: Container(padding: EdgeInsets.all(30), color: Colors.green, child: Text('2'),)),
+          Expanded(child: Container(padding: EdgeInsets.all(30), color: Colors.red, child: Text('3'),)),
+        ],),
         // body: Center(
         //   child: ,
         // ),
