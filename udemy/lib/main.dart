@@ -34,23 +34,28 @@ class _MyFirstAppState extends State<MyFirstApp> {
         ),
         body: Center(
           child: Container(
-            padding: EdgeInsets.all(16),
-            child: _loading
-                ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LinearProgressIndicator(
-                    value: _progressValue,
-                    color: Colors.cyanAccent),
-                Text('${(_progressValue * 100).round()}',
-                    style: TextStyle(color: Colors.white)),
-              ],
-            )
-                : Text(
-              'Press button to download',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+              padding: EdgeInsets.all(16),
+              child: _loading
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LinearProgressIndicator(
+                            value: _progressValue, color: Colors.cyanAccent),
+                        Text('${(_progressValue * 100).round()}',
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    )
+                  : Center(
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image(
+                            image: AssetImage('assets/images/bg.jpg'),
+                          ),
+                          Image.asset('assets/icons/icon.png')
+                        ],
+                      ),
+                    )),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
