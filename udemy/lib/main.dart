@@ -25,6 +25,7 @@ class _MyFirstAppState extends State<MyFirstApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(fontFamily: 'WaterBrush_Regular'),
       home: Scaffold(
         backgroundColor: Colors.indigo,
         appBar: AppBar(
@@ -34,7 +35,7 @@ class _MyFirstAppState extends State<MyFirstApp> {
         ),
         body: Center(
           child: Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(10),
               child: _loading
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -52,7 +53,19 @@ class _MyFirstAppState extends State<MyFirstApp> {
                           Image(
                             image: AssetImage('assets/images/bg.jpg'),
                           ),
-                          Image.asset('assets/icons/icon.png')
+                          Image.asset('assets/icons/icon.png'),
+                          Positioned(
+                            top: 16, left: 120,
+                            child: Text(
+                              'My custom fonts',
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                // fontFamily: 'WaterBrush_Regular'
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     )),
