@@ -33,15 +33,38 @@ class BodyListView extends StatelessWidget {
 }
 
 Widget _myListView() {
-  final List<String> items = List.generate(10000, (index) => 'item-${index}');
-  return Center(
-    child: ListView.builder(itemBuilder: (context, index) {
-      return Card(child: ListTile(
-        title: Text('${items[index]}'),
-        trailing: Icon(Icons.keyboard_arrow_right),
-          leading: Icon(Icons.insert_photo)
-      ),
-      );
-    }, itemCount: items.length,),
-  );
+  final List<ListItem> items = List.generate(10000, (index) =>
+  index % 6 == 0
+      ? HeadingItem('Heading ${index}')
+      : MessageItem('Sender ${index}', 'Message body $index'));
+  return ListView.builder(itemBuilder: (context, index) {
+      final item = items[index];
+      if (item is HeadingItem) {
+        return ListTile(title: Text(item.heading, style: Theme
+            .of(context)
+            .textTheme
+            .headline5,),);
+      } else if (item is MessageItem) {
+        return ListTile(title: Text(item.sender),
+          subtitle: Text(item.body),
+          trailing: Icon(Icons.arrow_right),
+          leading: Icon(Icons.insert_photo),);
+      }
+      return Text('sd');
+    }, itemCount: items.length,);
+}
+
+abstract class ListItem {}
+
+class HeadingItem implements ListItem {
+  final String heading;
+
+  HeadingItem(this.heading);
+}
+
+class MessageItem implements ListItem {
+  final String sender;
+  final String body;
+
+  MessageItem(this.sender, this.body);
 }
