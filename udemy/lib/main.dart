@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(MaterialApp(
   home: FirstPage(),
+  routes: {
+    '/first': (context) => FirstPage(),
+    '/second': (context) => SecondPage()
+  },
 ));
 
 class FirstPage extends StatelessWidget {
@@ -16,8 +20,7 @@ class FirstPage extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               User user = new User(name: 'Konstantin', age: 34);
-              Route route = MaterialPageRoute(builder: (context) => SecondPage(user));
-              Navigator.push(context, route);
+              Navigator.pushNamed(context, '/second', arguments: user);
             },
             child: Text('Move to Page 2'),
           ),
@@ -28,14 +31,14 @@ class FirstPage extends StatelessWidget {
 
 
 class SecondPage extends StatelessWidget {
-  final User user;
-  SecondPage(this.user);
+  User ?user;
   @override
   Widget build(BuildContext context) {
+    user = ModalRoute.of(context)!.settings.arguments as User;
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('${this.user.name} - ${this.user.age}'),
+          title: Text('${this.user?.name} - ${this.user?.age}'),
           centerTitle: true,
         ),
         body: Center(
