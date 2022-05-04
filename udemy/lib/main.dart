@@ -1,44 +1,41 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MaterialApp(
+  home: FirstPage(),
+));
 
-class MyApp extends StatelessWidget {
+class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+      return Scaffold(
         appBar: AppBar(
           title: Text('Simple Routing'),
           centerTitle: true,
         ),
-        body: HomePage(),
-      ),
-    );
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              User user = new User(name: 'Konstantin', age: 34);
+              Route route = MaterialPageRoute(builder: (context) => SecondPage(user));
+              Navigator.push(context, route);
+            },
+            child: Text('Move to Page 2'),
+          ),
+        ),
+      );
   }
 }
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          Route route = MaterialPageRoute(builder: (context) => Page2());
-          Navigator.push(context, route);
-        },
-        child: Text('Move to Page 2'),
-      ),
-    );
-  }
-}
 
-class Page2 extends StatelessWidget {
+class SecondPage extends StatelessWidget {
+  final User user;
+  SecondPage(this.user);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Simple Routing'),
+          title: Text('${this.user.name} - ${this.user.age}'),
           centerTitle: true,
         ),
         body: Center(
@@ -52,4 +49,10 @@ class Page2 extends StatelessWidget {
       ),
     );
   }
+}
+
+class User {
+  final String name;
+  final int age;
+  User({this.name = '', this.age = 0});
 }
