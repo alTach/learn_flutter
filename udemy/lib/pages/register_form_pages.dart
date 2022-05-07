@@ -226,7 +226,7 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
       _formKey.currentState?.save();
       print('Form is valid');
     } else {
-      print('Form is not valid. Please review and correct');
+      _showMessage(message: 'Form is not valid. Please review and correct');
     }
   }
 
@@ -265,5 +265,12 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
 
   String? _validateCountry([String? val = '']) {
     return val == null ? 'Please select country' : null;
+  }
+
+  void _showMessage({String message = ''}) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      duration: Duration(seconds: 2),
+      content: Text("Hi, I am a snack bar!"),
+    ));
   }
 }
