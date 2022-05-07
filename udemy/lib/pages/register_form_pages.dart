@@ -20,8 +20,18 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
   final _passController = TextEditingController();
   final _confirmPassController = TextEditingController();
 
+
+  final _nameFocus = FocusNode();
+  final _phoneFocus = FocusNode();
+  final _passFocus = FocusNode();
+
   List<String> countries = ['Russia', 'Ukrain', 'German', 'French'];
   String? _selectedCountry;
+
+  void _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
 
   @override
   void dispose() {
@@ -31,6 +41,9 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
     _liveController.dispose();
     _passController.dispose();
     _confirmPassController.dispose();
+    _nameFocus.dispose();
+    _phoneFocus.dispose();
+    _passFocus.dispose();
     super.dispose();
   }
 
@@ -47,6 +60,9 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
           children: [
             TextFormField(
               controller: _nameController,
+              focusNode: _nameFocus,
+              autofocus: true,
+              onFieldSubmitted: (_) => _fieldFocusChange(context, _nameFocus, _phoneFocus),
               validator: _validateName,
               decoration: InputDecoration(
                   labelText: 'Full name *',
@@ -68,6 +84,8 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
             ),
             TextFormField(
               controller: _phoneController,
+              focusNode: _phoneFocus,
+              onFieldSubmitted: (_) => _fieldFocusChange(context, _nameFocus, _passFocus),
               keyboardType: TextInputType.phone,
               inputFormatters: [
                 // FilteringTextInputFormatter.digitsOnly
@@ -144,6 +162,7 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
             TextFormField(
               controller: _passController,
               obscureText: hidePass,
+              focusNode: _passFocus,
               maxLength: 8,
               validator: _validatePass,
               decoration: InputDecoration(
