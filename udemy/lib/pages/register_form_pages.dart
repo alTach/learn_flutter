@@ -20,7 +20,6 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
   final _passController = TextEditingController();
   final _confirmPassController = TextEditingController();
 
-
   final _nameFocus = FocusNode();
   final _phoneFocus = FocusNode();
   final _passFocus = FocusNode();
@@ -28,7 +27,8 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
   List<String> countries = ['Russia', 'Ukrain', 'German', 'French'];
   String? _selectedCountry;
 
-  void _fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+  void _fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
@@ -62,7 +62,8 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
               controller: _nameController,
               focusNode: _nameFocus,
               autofocus: true,
-              onFieldSubmitted: (_) => _fieldFocusChange(context, _nameFocus, _phoneFocus),
+              onFieldSubmitted: (_) =>
+                  _fieldFocusChange(context, _nameFocus, _phoneFocus),
               validator: _validateName,
               decoration: InputDecoration(
                   labelText: 'Full name *',
@@ -85,7 +86,8 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
             TextFormField(
               controller: _phoneController,
               focusNode: _phoneFocus,
-              onFieldSubmitted: (_) => _fieldFocusChange(context, _nameFocus, _passFocus),
+              onFieldSubmitted: (_) =>
+                  _fieldFocusChange(context, _nameFocus, _passFocus),
               keyboardType: TextInputType.phone,
               inputFormatters: [
                 // FilteringTextInputFormatter.digitsOnly
@@ -225,6 +227,7 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
       print('Form is valid');
+      _showDialog(_nameController.text);
     } else {
       _showMessage(message: 'Form is not valid. Please review and correct');
     }
@@ -272,5 +275,22 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
       duration: Duration(seconds: 2),
       content: Text("Hi, I am a snack bar!"),
     ));
+  }
+
+  void _showDialog(String name) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Registration successfull'),
+              content: Text('${name} is now a verifyied register form'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Verifiyed'),
+                )
+              ],
+            ));
   }
 }
