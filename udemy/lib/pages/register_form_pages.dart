@@ -20,6 +20,9 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
   final _passController = TextEditingController();
   final _confirmPassController = TextEditingController();
 
+  List<String> countries = ['Russia', 'Ukrain', 'German', 'French'];
+  String? _selectedCountry;
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -70,7 +73,9 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
                 // FilteringTextInputFormatter.digitsOnly
                 // FilteringTextInputFormatter(RegExp(r'[()\d-]{1,35}$'), allow: true)
               ],
-              validator: (val) => _validatePhoneNumber(val) ? null : 'Phone number must be entered as (###)-###-####',
+              validator: (val) => _validatePhoneNumber(val)
+                  ? null
+                  : 'Phone number must be entered as (###)-###-####',
               decoration: InputDecoration(
                 labelText: 'Phone number',
                 helperText: 'Phone format (xxx)xxxx-xxxx',
@@ -97,6 +102,29 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   labelText: 'Email address *', icon: Icon(Icons.email)),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            DropdownButtonFormField(
+              items: countries
+                  .map(
+                    (country) =>
+                        DropdownMenuItem(child: Text(country), value: country),
+                  )
+                  .toList(),
+              onChanged: (String? data) {
+                print(data);
+                setState(() {
+                  _selectedCountry = data ?? 'Russia';
+                });
+              },
+              validator: _validateCountry,
+              value: _selectedCountry,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.map),
+                  labelText: 'Countries?'),
             ),
             SizedBox(
               height: 10,
@@ -214,5 +242,9 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
       return 'Pass does\'t match';
     }
     return null;
+  }
+
+  String? _validateCountry([String? val = '']) {
+    return val == null ? 'Please select country' : null;
   }
 }
