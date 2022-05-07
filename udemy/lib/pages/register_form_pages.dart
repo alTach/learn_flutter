@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RegisterFormPages extends StatefulWidget {
   @override
@@ -6,6 +7,8 @@ class RegisterFormPages extends StatefulWidget {
 }
 
 class _RegisterFormPagesState extends State<StatefulWidget> {
+  bool hidePass = true;
+  bool hideConfirmPass = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +39,10 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
               height: 10,
             ),
             TextFormField(
+              keyboardType: TextInputType.phone,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly
+              ],
               decoration: InputDecoration(
                 labelText: 'Phone number',
                 helperText: 'Phone format (xx) xxx - xx - xx',
@@ -57,6 +64,7 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
               height: 10,
             ),
             TextField(
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   labelText: 'Email address *', icon: Icon(Icons.email)),
             ),
@@ -74,21 +82,33 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
               height: 10,
             ),
             TextFormField(
+              obscureText: hidePass,
+              maxLength: 8,
               decoration: InputDecoration(
                 labelText: 'Password',
                 hintText: "Enter the password",
                 icon: Icon(Icons.security),
-                suffixIcon: Icon(Icons.visibility),
+                suffixIcon: IconButton(icon: hidePass ? Icon(Icons.visibility) : Icon(Icons.visibility_off), onPressed: () {
+                  setState(() {
+                    this.hidePass = !this.hidePass;
+                  });
+                },),
               ),
             ),
             SizedBox(
               height: 10,
             ),
             TextFormField(
+              obscureText: hideConfirmPass,
+              maxLength: 8,
               decoration: InputDecoration(
                 labelText: 'Confirm password',
                 icon: Icon(Icons.border_color),
-                suffixIcon: Icon(Icons.visibility),
+                suffixIcon: IconButton(icon: hideConfirmPass ? Icon(Icons.visibility) : Icon(Icons.visibility_off), onPressed: () {
+                  setState(() {
+                    this.hideConfirmPass = !this.hideConfirmPass;
+                  });
+                },),
               ),
             ),
             SizedBox(
