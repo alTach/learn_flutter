@@ -69,9 +69,13 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
                   labelText: 'Full name *',
                   hintText: 'What people call you?',
                   prefixIcon: Icon(Icons.person),
-                  suffixIcon: Icon(
+                  suffixIcon: GestureDetector(child: Icon(
                     Icons.delete,
                     color: Colors.red,
+                  ),
+                  onTap: (){
+                    _nameController.clear();
+                  },
                   ),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -101,10 +105,10 @@ class _RegisterFormPagesState extends State<StatefulWidget> {
                 helperText: 'Phone format (xxx)xxxx-xxxx',
                 hintText: 'Where can we rich you?',
                 prefixIcon: Icon(Icons.phone),
-                suffixIcon: Icon(
+                suffixIcon: GestureDetector(child: Icon(
                   Icons.delete,
                   color: Colors.red,
-                ),
+                ), onLongPress: (){_phoneController.clear();},),
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     borderSide: BorderSide(color: Colors.black87)),
