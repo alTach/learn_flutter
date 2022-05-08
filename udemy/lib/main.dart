@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+
+
   @override
   Widget build(BuildContext context) {
-    var rowDate = DateTime(1485789600);
-    var dateFormat = DateFormat('EEEE');
-    print(dateFormat.format(rowDate));
     return MaterialApp(
         title: 'Flutter demo',
         theme: ThemeData(
@@ -21,4 +26,27 @@ class MyApp extends StatelessWidget {
           body: Text("sdadas"),
         ));
   }
+
+  @override
+  void initState() {
+    loadData();
+  }
+}
+
+
+Future<http.Response> getData() async {
+  var url = Uri.parse('https://jsonplaceholder.typicode.com/todos/1');
+  return await http.get(url);
+}
+
+void loadData() {
+  getData().then((res) => {
+    if (res.statusCode == 200) {
+      print(res.body)
+    } else {
+      print(res.statusCode)
+    }
+  }).catchError((err){
+    debugPrint(err.toString());
+  });
 }
