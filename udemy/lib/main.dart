@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,13 +26,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  int get counterValue => _counter;
-
-  void _incrementCounter() => setState(() => _counter++);
-  void _decrementCounter() => setState(() => _counter--);
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,10 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(
         children: <Widget>[
-          MyInheritedWidget(
-            myState: this,
-            child: MyInheritedWidget(child: AppRootWidget(), myState: this),
-          ),
+          ScopedModel(model: MyModalState(), child: AppRootWidget()),
         ],
       ),
     );
@@ -82,30 +74,33 @@ class Counter extends StatelessWidget {
   Widget build(BuildContext context) {
     // final rootWidgetState = MyInheritedWidget.of(context)!.myState;
     final rootWidgetState = MyInheritedWidget.of(context)!.myState;
-    return Card(
-      margin: EdgeInsets.all(4.0).copyWith(bottom: 32.0),
-      color: Colors.yellowAccent,
-      child: Column(
-        children: <Widget>[
-          Text('(Child Widget)'),
-          Text('${rootWidgetState.counterValue}', style: Theme.of(context).textTheme.headline4),
-          ButtonBar(
+    return ScopedModelDescendant<MyModalState>(
+      rebuildOnChange: true,
+        builder: (context, child, model) => Card(
+          margin: EdgeInsets.all(4.0).copyWith(bottom: 32.0),
+          color: Colors.yellowAccent,
+          child: Column(
             children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.remove),
-                color: Colors.red,
-                onPressed: () => rootWidgetState._decrementCounter(),
-              ),
-              IconButton(
-                icon: Icon(Icons.add),
-                color: Colors.green,
-                onPressed: () => rootWidgetState._incrementCounter(),
+              Text('(Child Widget)'),
+              Text('${model.counterValue}', style: Theme.of(context).textTheme.headline4),
+              ButtonBar(
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.remove),
+                    color: Colors.red,
+                    onPressed: () => model._decrementCounter(),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    color: Colors.green,
+                    onPressed: () => model._incrementCounter(),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-    );
+        )
+    )
   }
 }
 
@@ -122,5 +117,20 @@ class MyInheritedWidget extends InheritedWidget {
 
   static MyInheritedWidget? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType();
+  }
+}
+
+class MyModalState extends Model {
+  int _counter = 0;
+
+  int get counterValue => _counter;
+
+  void _incrementCounter(){
+   _counter++;
+   notifyListeners();
+  }
+  void _decrementCounter(){
+   _counter--;
+   notifyListeners();
   }
 }
