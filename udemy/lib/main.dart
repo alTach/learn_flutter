@@ -3,76 +3,124 @@ import 'package:flutter/material.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Vanilla Demo', home: MyHomePage());
+    return MaterialApp(
+      title: 'Inherited Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'Inherited Demo'),
+    );
   }
 }
 
-// class _MyAppState extends State<MyApp> {
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-// }
-
 class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
+
   @override
-  State<StatefulWidget> createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State {
-  int _rating = 0;
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  int get counterValue => _counter;
+
+  void _incrementCounter() => setState(() => _counter++);
+  void _decrementCounter() => setState(() => _counter--);
 
   @override
   Widget build(BuildContext context) {
-    double _size = 50;
     return Scaffold(
       appBar: AppBar(
-        title: Text(' Vanilla Demo'),
+        title: Text('Inherited Widget'),
+        centerTitle: true,
       ),
-      body: Center(
-        child: Row(
-          children: [
-            Container(
-              child: IconButton(
-                icon: _rating >= 1 ? Icon(Icons.stars) : Icon(Icons.star_border),
-                iconSize: _size,
-                color: Colors.indigo[500],
-                onPressed: () {
-                  setState(() {
-                    _rating = 1;
-                  });
-                },
-              ),
-            ),
-            Container(
-              child: IconButton(
-                icon: _rating >= 2 ? Icon(Icons.stars) : Icon(Icons.star_border),
-                iconSize: _size,
-                color: Colors.indigo[500],
-                onPressed: () {
-                  setState(() {
-                    _rating = 2;
-                  });
-                },
-              ),
-            ),
-            Container(
-              child: IconButton(
-                icon: _rating >= 3 ? Icon(Icons.stars) : Icon(Icons.star_border),
-                iconSize: _size,
-                color: Colors.indigo[500],
-                onPressed: () {
-                  setState(() {
-                    _rating = 3;
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
+      body: ListView(
+        children: <Widget>[
+          MyInheritedWidget(
+            myState: this,
+            child: MyInheritedWidget(child: AppRootWidget(), myState: this),
+          ),
+        ],
       ),
     );
+  }
+}
+
+class AppRootWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // final rootWidgetState = MyInheritedWidget.of(context)!.myState;
+    final rootWidgetState = MyInheritedWidget.of(context)!.myState;
+    return Card(
+      elevation: 4.0,
+      child: Column(
+        children: <Widget>[
+          Text('(Root Widget)', style: Theme.of(context).textTheme.headline4),
+          Text('${rootWidgetState.counterValue}', style: Theme.of(context).textTheme.headline4),
+          // Text('${rootWidgetState.counterValue}')
+          SizedBox(height: 50),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Counter(),
+              Counter(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Counter extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // final rootWidgetState = MyInheritedWidget.of(context)!.myState;
+    final rootWidgetState = MyInheritedWidget.of(context)!.myState;
+    return Card(
+      margin: EdgeInsets.all(4.0).copyWith(bottom: 32.0),
+      color: Colors.yellowAccent,
+      child: Column(
+        children: <Widget>[
+          Text('(Child Widget)'),
+          Text('${rootWidgetState.counterValue}', style: Theme.of(context).textTheme.headline4),
+          ButtonBar(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.remove),
+                color: Colors.red,
+                onPressed: () => rootWidgetState._decrementCounter(),
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                color: Colors.green,
+                onPressed: () => rootWidgetState._incrementCounter(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MyInheritedWidget extends InheritedWidget {
+  final _MyHomePageState myState;
+
+  MyInheritedWidget({Key? key, required Widget child, required this.myState})
+      : super(key: key, child: child);
+
+  @override
+  bool updateShouldNotify(MyInheritedWidget oldWidget) {
+    return this.myState.counterValue != oldWidget.myState.counterValue;
+  }
+
+  static MyInheritedWidget? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType();
   }
 }
