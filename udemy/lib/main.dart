@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
       home: MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: CounterProvider(),),
+          FutureProvider(create: (_) async => UserProvider().loadUserData(), initialData: null,),
+          StreamProvider(create: (_) => EventProvider().initStream(), initialData: 0)
         ],
           child: DefaultTabController(
             length: 3,
