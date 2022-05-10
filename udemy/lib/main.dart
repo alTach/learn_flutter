@@ -1,9 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'my-count-page.dart';
-import 'my-event-page.dart';
-import 'my-user-page.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,42 +10,53 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Inherited Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: CounterProvider(),),
-          FutureProvider(create: (_) async => UserProvider().loadUserData(), initialData: null,),
-          StreamProvider(create: (_) => EventProvider().initStream(), initialData: 0)
-        ],
-          child: DefaultTabController(
-            length: 3,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text('Provide demo'),
-                centerTitle: true,
-                bottom: TabBar(
-                  tabs: [
-                    Tab(
-                      icon: Icon(Icons.add),
-                    ),
-                    Tab(
-                      icon: Icon(Icons.person),
-                    ),
-                    Tab(
-                      icon: Icon(Icons.message),
-                    ),
-                  ],
-                ),
-              ),
-              body: TabBarView(
-                children: [MyCountPage(), MyUserPage(), MyEventPage()],
-              ),
-            ),
-          )
+        providers: [ChangeNotifierProvider.value(value: SwitchProvider())],
+        child: Scaffold(
+          appBar: AppBar(
+              title: Text(
+            'Homework Provider',
+          )),
+          body: Center(
+            child: Square(),
+          ),
+        ),
       ),
     );
+  }
+}
+
+class Square extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    SwitchProvider _switchStore = Provider.of<SwitchProvider>(context);
+    getRandom()=>Color.fromARGB(100, Random().nextInt(255), Random().nextInt(255), Random().nextInt(255));
+    return Column(
+      children: [
+        AnimatedContainer(
+          duration: Duration(milliseconds: 800),
+          curve: Curves.fastOutSlowIn,
+          height: Random().nextInt(400).toDouble(),
+          width: Random().nextInt(400).toDouble(),
+          color: _switchStore._state ? getRandom() : getRandom(),
+        ),
+        Switch(
+          onChanged: (bool value) {
+            _switchStore.toggle(value);
+          },
+          value: _switchStore._state,
+        )
+      ],
+    );
+  }
+}
+
+class SwitchProvider extends ChangeNotifier {
+  var _state = false;
+
+  toggle(bool state) {
+    _state = state;
+    notifyListeners();
   }
 }

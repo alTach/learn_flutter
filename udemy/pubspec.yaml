@@ -67,7 +67,6 @@ flutter:
   assets:
     - assets/icons/icon.png
     - assets/images/bg.jpg
-    - assets/user.json
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware.
