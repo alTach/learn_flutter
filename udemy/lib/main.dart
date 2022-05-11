@@ -1,8 +1,5 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,111 +8,103 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Local file read/write Demo',
-      home: ReadWriteFileExample(),
+      title: 'Shared Preference Demo',
+      home: SharedPrefereceExample(),
     );
   }
 }
 
-class ReadWriteFileExample extends StatefulWidget {
+class SharedPrefereceExample extends StatefulWidget {
   @override
-  _ReadWriteFileExampleState createState() => _ReadWriteFileExampleState();
+  _SharedPrefereceExampleState createState() => _SharedPrefereceExampleState();
 }
 
-class _ReadWriteFileExampleState extends State<ReadWriteFileExample> {
-  final TextEditingController _textController = TextEditingController();
-  String localFileContent = '';
-  static const String kLocalFileName = 'demo_localfile.txt';
-  String localFilePath = '';
+class _SharedPrefereceExampleState extends State<SharedPrefereceExample> {
 
+  late SharedPreferences _prefs;
+
+  static const String kNumberPrefKey = 'number_pref';
+  static const String kBoolPrefKey = 'bool_pref';
+
+  int _numberPref = 0;
+  bool _boolPref = false;
 
   @override
   void initState() {
     super.initState();
-    log('sdsds');
-    this._readTextFromLocalFile();
-    this._getLocalFile.then((file) => setState(() => {
-      log(file.path),
-      this.localFilePath = file.path
-    }));
+    SharedPreferences.getInstance()
+      ..then((prefs) {
+        setState(() => this._prefs = prefs);
+        _loadNumberPref();
+        _loadBoolPref();
+      });
   }
 
   @override
   Widget build(BuildContext context) {
-    FocusNode textFieldFocusNode = FocusNode();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Local file read/write Demo'),
+        title: Text('Shared Preference Demo'),
         centerTitle: true,
       ),
-      body: ListView(
-        padding: EdgeInsets.all(20.0),
+      body: Column(
         children: <Widget>[
-          Text('Write to local file:', style: TextStyle(fontSize: 20)),
-          TextField(
-              focusNode: textFieldFocusNode,
-              controller: _textController,
-              maxLines: null,
-              style: TextStyle(fontSize: 20)
-          ),
-          ButtonBar(
-            children: <Widget>[
-              MaterialButton(
-                child: Text('Load', style: TextStyle(fontSize: 20)),
-                onPressed: () async {
-                  this._readTextFromLocalFile();
-                  this._textController.text = this.localFileContent;
-                  FocusScope.of(context).requestFocus(textFieldFocusNode);
-                  log('String success loaded from local file');
-                },
-              ),
-              MaterialButton(
-                child: Text('Save', style: TextStyle(fontSize: 20)),
-                onPressed: () async {
-                  await this._writeTextLocalFile(this._textController.text);
-                  this._textController.clear();
-                  await this._readTextFromLocalFile();
-                  log('String success loaded from local file');
-                },
-              ),
+          Table(
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: <TableRow>[
+              TableRow(children: <Widget>[
+                Text('Number Preference'),
+                Text('${this._numberPref}'),
+                ElevatedButton(
+                  child: Text('Increment'),
+                  onPressed: () => this._setNumberPref(this._numberPref + 1),
+                ),
+              ]),
+              TableRow(children: <Widget>[
+                Text('Boolean Preference'),
+                Text('${this._boolPref}'),
+                ElevatedButton(
+                  child: Text('Toogle'),
+                  onPressed: () => this._setBoolPref(!this._boolPref),
+                ),
+              ]),
             ],
           ),
-          Divider(height: 20.0),
-          Text(this.localFilePath, style: Theme.of(context).textTheme.headline6),
-          Text('demo_localfile.txt', style: Theme.of(context).textTheme.subtitle1),
-          Divider(height: 20.0),
-          Text('Local file content:', style: Theme.of(context).textTheme.headline6),
-          Text(this.localFileContent, style: Theme.of(context).textTheme.subtitle1),
+          ElevatedButton(
+            child: Text('Reset Data'),
+            onPressed: () => this._resetDataPref(),
+          ),
         ],
       ),
     );
   }
 
-  Future<String> get _getLocalPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+  Future<Null> _setNumberPref(int value) async {
+    await this._prefs.setInt(kNumberPrefKey, value);
+    _loadNumberPref();
   }
 
-  Future<File> get _getLocalFile async {
-    final String path = await _getLocalPath;
-    return File('${path}/${kLocalFileName}');
-  }
-  
-  Future<File> _writeTextLocalFile(String text) async {
-    final file = await _getLocalFile;
-    return file.writeAsString(text);
+  Future<Null> _setBoolPref(bool value) async {
+    await this._prefs.setBool(kBoolPrefKey, value);
+    _loadBoolPref();
   }
 
-  Future _readTextFromLocalFile() async {
-    String content;
-    try {
-      final file = await _getLocalFile;
-      content = await file.readAsString();
-    } catch(e) {
-      content = 'Error loading local file $e';
-    }
+  void _loadNumberPref() {
     setState(() {
-      this.localFileContent = content;
+      this._numberPref = this._prefs.getInt(kNumberPrefKey) ?? 0;
     });
+  }
+
+  void _loadBoolPref() {
+    setState(() {
+      this._boolPref = this._prefs.getBool(kBoolPrefKey) ?? false;
+    });
+  }
+
+  Future<Null> _resetDataPref() async {
+    await this._prefs.remove(kNumberPrefKey);
+    await this._prefs.remove(kBoolPrefKey);
+    _loadNumberPref();
+    _loadBoolPref();
   }
 }
