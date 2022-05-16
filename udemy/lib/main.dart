@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sql_example/db/database.dart';
+import 'package:sql_example/model/student.dart';
 
+import 'modal/student.dart';
+// NOT WORK
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -8,103 +11,206 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Shared Preference Demo',
-      home: SharedPrefereceExample(),
+      title: 'SQLite CRUD Demo',
+      home: StudentPage(),
     );
   }
 }
 
-class SharedPrefereceExample extends StatefulWidget {
+class StudentPage extends StatefulWidget {
   @override
-  _SharedPrefereceExampleState createState() => _SharedPrefereceExampleState();
+  _StudentPageState createState() => _StudentPageState();
 }
 
-class _SharedPrefereceExampleState extends State<SharedPrefereceExample> {
+class _StudentPageState extends State<StudentPage> {
+  final GlobalKey<FormState> _formStateKey = GlobalKey<FormState>();
+  final _studentNameController = TextEditingController();
 
-  late SharedPreferences _prefs;
-
-  static const String kNumberPrefKey = 'number_pref';
-  static const String kBoolPrefKey = 'bool_pref';
-
-  int _numberPref = 0;
-  bool _boolPref = false;
+  late Future<List<Student>> _studentsList;
+  late String _studentName;
+  bool isUpdate = false;
+  int? studentIdForUpdate;
 
   @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance()
-      ..then((prefs) {
-        setState(() => this._prefs = prefs);
-        _loadNumberPref();
-        _loadBoolPref();
-      });
+    updateStudentList();
+  }
+
+  updateStudentList() {
+    setState(() {
+      _studentsList = DBProvider.db.getStudents();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shared Preference Demo'),
+        title: Text('SQLite CRUD Demo'),
         centerTitle: true,
+        backgroundColor: Colors.black,
       ),
       body: Column(
         children: <Widget>[
-          Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: <TableRow>[
-              TableRow(children: <Widget>[
-                Text('Number Preference'),
-                Text('${this._numberPref}'),
-                ElevatedButton(
-                  child: Text('Increment'),
-                  onPressed: () => this._setNumberPref(this._numberPref + 1),
+          Form(
+            key: _formStateKey,
+            autovalidateMode: AutovalidateMode.always,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please Enter Student Name';
+                      }
+                      if (value.trim() == "")
+                        return "Only Space is Not Valid!!!";
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _studentName = value!;
+                    },
+                    controller: _studentNameController,
+                    decoration: InputDecoration(
+                      focusedBorder: new UnderlineInputBorder(
+                        borderSide: new BorderSide(
+                            color: Colors.greenAccent,
+                            width: 2,
+                            style: BorderStyle.solid),
+                      ),
+                      labelText: "Student Name",
+                      icon: Icon(
+                        Icons.people,
+                        color: Colors.black,
+                      ),
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
                 ),
-              ]),
-              TableRow(children: <Widget>[
-                Text('Boolean Preference'),
-                Text('${this._boolPref}'),
-                ElevatedButton(
-                  child: Text('Toogle'),
-                  onPressed: () => this._setBoolPref(!this._boolPref),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                  textStyle: TextStyle(color: Colors.white),
                 ),
-              ]),
+                child: Text(
+                  (isUpdate ? 'UPDATE' : 'ADD'),
+                ),
+                onPressed: () {
+                  if (isUpdate) {
+                    if (_formStateKey.currentState!.validate()) {
+                      _formStateKey.currentState!.save();
+                      DBProvider.db
+                          .updateStudent(
+                          Student(studentIdForUpdate!, _studentName))
+                          .then((data) {
+                        setState(() {
+                          isUpdate = false;
+                        });
+                      });
+                    }
+                  } else {
+                    if (_formStateKey.currentState!.validate()) {
+                      _formStateKey.currentState!.save();
+                      // DBProvider.db.insertStudent(Student(null, _studentName));
+                      DBProvider.db.insertStudent(Student(null, _studentName));
+                    }
+                  }
+                  _studentNameController.text = '';
+                  updateStudentList();
+                },
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red,
+                  textStyle: TextStyle(color: Colors.white),
+                ),
+                child: Text(
+                  (isUpdate ? 'CANCEL UPDATE' : 'CLEAR'),
+                ),
+                onPressed: () {
+                  _studentNameController.text = '';
+                  setState(() {
+                    isUpdate = false;
+                    studentIdForUpdate = null; // null;
+                  });
+                },
+              ),
             ],
           ),
-          ElevatedButton(
-            child: Text('Reset Data'),
-            onPressed: () => this._resetDataPref(),
+          const Divider(
+            height: 5.0,
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: _studentsList,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return generateList(snapshot.data as List<Student>);
+                }
+                if (snapshot.data == null || (snapshot.data as List<Student>).length == 0) {
+                  return Text('No Data Found');
+                }
+                return CircularProgressIndicator();
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  Future<Null> _setNumberPref(int value) async {
-    await this._prefs.setInt(kNumberPrefKey, value);
-    _loadNumberPref();
-  }
-
-  Future<Null> _setBoolPref(bool value) async {
-    await this._prefs.setBool(kBoolPrefKey, value);
-    _loadBoolPref();
-  }
-
-  void _loadNumberPref() {
-    setState(() {
-      this._numberPref = this._prefs.getInt(kNumberPrefKey) ?? 0;
-    });
-  }
-
-  void _loadBoolPref() {
-    setState(() {
-      this._boolPref = this._prefs.getBool(kBoolPrefKey) ?? false;
-    });
-  }
-
-  Future<Null> _resetDataPref() async {
-    await this._prefs.remove(kNumberPrefKey);
-    await this._prefs.remove(kBoolPrefKey);
-    _loadNumberPref();
-    _loadBoolPref();
+  SingleChildScrollView generateList(List<Student> students) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: DataTable(
+          columns: [
+            DataColumn(
+              label: Text('NAME'),
+            ),
+            DataColumn(
+              label: Text('DELETE'),
+            ),
+          ],
+          rows: students
+              .map(
+                (student) => DataRow(cells: [
+              DataCell(Text(student.name), onTap: () {
+                setState(() {
+                  isUpdate = true;
+                  studentIdForUpdate = student.id;
+                });
+                _studentNameController.text = student.name;
+              }),
+              DataCell(
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    DBProvider.db.deleteStudent(student.id);
+                    updateStudentList();
+                  },
+                ),
+              ),
+            ]),
+          )
+              .toList(),
+        ),
+      ),
+    );
   }
 }
