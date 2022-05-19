@@ -1,13 +1,15 @@
-class WheatherForecast {
+import 'package:udemy/utilities/constants.dart';
+
+class WeatherForecast {
   City? city;
   String? cod;
   double? message;
   int? cnt;
   List<WheatherList>? list;
 
-  WheatherForecast({this.city, this.cod, this.message, this.cnt, this.list});
+  WeatherForecast({this.city, this.cod, this.message, this.cnt, this.list});
 
-  WheatherForecast.fromJson(Map<String, dynamic> json) {
+  WeatherForecast.fromJson(Map<String, dynamic> json) {
     city = json['city'] != null ? new City.fromJson(json['city']) : null;
     cod = json['cod'];
     message = json['message'];
@@ -172,6 +174,10 @@ class WheatherList {
     data['pop'] = this.pop;
     data['rain'] = this.rain;
     return data;
+  }
+
+  getIconUrl() {
+    return Constants.WEATHER_IMAGES_URL + weather![0].icon! + '.png';
   }
 }
 
