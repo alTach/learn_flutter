@@ -4,14 +4,14 @@ import 'package:udemy/core/error/exception.dart';
 import 'package:udemy/feature/data/models/person_modal.dart';
 import 'package:http/http.dart' as http;
 
-abstract class PersonRemoveDataSource {
+abstract class PersonRemoteDataSource {
   Future<List<PersonModal>> getAllPersons(int page);
   Future<List<PersonModal>> searchPersons(String query);
 }
 
-class PersonRemoteDataSourceImp extends PersonRemoveDataSource {
+class PersonRemoteDataSourceImp extends PersonRemoteDataSource {
   final http.Client client;
-  PersonRemoteDataSourceImp({required this.http});
+  PersonRemoteDataSourceImp({required this.client});
 
   @override
   Future<List<PersonModal>> getAllPersons(int page) => _getPersonFromUrl('https://rickandmortyapi.com/api/character?page=$page');
@@ -29,5 +29,4 @@ class PersonRemoteDataSourceImp extends PersonRemoveDataSource {
       throw ServerException();
     }
   }
-
 }

@@ -6,7 +6,7 @@ import '../../../core/error/failure.dart';
 import '../../../core/usecases/usecases.dart';
 import '../entities/person_entity.dart';
 
-class GetAllPersons extends UserCase<List<PersonEntity>, PagePersonParams> {
+class GetAllPersons extends UseCase<List<PersonEntity>, PagePersonParams> {
   final PersonRepository personRepository;
 
   GetAllPersons(this.personRepository);

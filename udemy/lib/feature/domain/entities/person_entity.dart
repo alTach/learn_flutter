@@ -25,7 +25,7 @@ class PersonEntity extends Equatable {
     required this.image,
     required this.episode,
     required this.created,
-  })
+  });
 
 
   @override

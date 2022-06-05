@@ -10,17 +10,16 @@ import '../../domain/repositories/person_repository.dart';
 import '../datasources/person_local_data_source.dart';
 import '../datasources/person_remote_data_source.dart';
 
-class PersonRepositoryImpl extends PersonRepository {
-  PersonRemoteDataSourceImp remoteDataSource;
-  PersonLocalDataSourceIml localDataSource;
-  NetworkInfo networkInfo;
+class PersonRepositoryImpl implements PersonRepository {
+  final PersonRemoteDataSource remoteDataSource;
+  final PersonLocalDataSource localDataSource;
+  final NetworkInfo networkInfo;
 
-
-  PersonRepositoryImpl(
-      {
-        required this.remoteDataSource,
-        required this.localDataSource,
-        required this.networkInfo});
+  PersonRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+    required this.networkInfo,
+  });
 
   @override
   Future<Either<Failure, List<PersonEntity>>> getAllPersons(int page) async {
@@ -34,8 +33,10 @@ class PersonRepositoryImpl extends PersonRepository {
       }
     } else {
       try {
-        const locationPerson = await localDataSource.getLastPersonsFromCache();
-        Right(locationPerson);
+        final localPerson = await localDataSource.getLastPersonsFromCache();
+        return Right(localPerson);
+      } on CacheException {
+        return Left(CacheFailure());
       }
     }
   }

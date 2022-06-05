@@ -17,8 +17,8 @@ class PersonLocalDataSourceIml extends PersonLocalDataSource {
   @override
   Future<List<PersonModal>> getLastPersonsFromCache() {
     final jsonPersonsList = sharedPreferences.getStringList(CACHED_PERSONS_LIST);
-    if (jsonPersonsList?.isNotEmpty) {
-      return Future.value((jsonPersonsList as List<String>)!.map((person) => PersonModal.fromJson(jsonDecode(person))).toList());
+    if (jsonPersonsList?.isNotEmpty ?? false) {
+      return Future.value((jsonPersonsList as List<String>).map((person) => PersonModal.fromJson(jsonDecode(person))).toList());
     } else {
       throw CacheException();
     }

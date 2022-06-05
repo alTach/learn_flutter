@@ -6,10 +6,10 @@ import '../../../core/error/failure.dart';
 import '../../../core/usecases/usecases.dart';
 import '../entities/person_entity.dart';
 
-class SearchPersons extends UserCase<List<PersonEntity>, SearchPersonParams> {
+class SearchPerson extends UseCase<List<PersonEntity>, SearchPersonParams> {
   final PersonRepository personRepository;
 
-  SearchPersons(this.personRepository);
+  SearchPerson(this.personRepository);
 
   Future<Either<Failure, List<PersonEntity>>> call(SearchPersonParams params) async {
     return await personRepository.searchPerson(params.query);

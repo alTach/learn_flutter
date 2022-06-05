@@ -27,7 +27,7 @@ class PersonModal extends PersonEntity {
       image: image,
       episode: episode,
       created: created,
-  )
+  );
 
   factory PersonModal.fromJson(Map<String, dynamic> json) {
     return PersonModal(
@@ -37,8 +37,8 @@ class PersonModal extends PersonEntity {
     species: json['species'],
     type: json['type'],
     gender: json['gender'],
-    origin: json['origin'] != null ? LocationModal.fromJson(json['origin']) : null,
-    location: json['location'] != null ? LocationModal.fromJson(json['location']) : null,
+    origin: json['origin'] != null ? LocationModel.fromJson(json['origin']) : null,
+    location: json['location'] != null ? LocationModel.fromJson(json['location']) : null,
     image: json['image'],
     episode: (json['episode'] as List<dynamic>).map((e) => e as String).toList(),
     created: DateTime.parse(json['created'] as String),
@@ -58,6 +58,6 @@ class PersonModal extends PersonEntity {
       'image': image,
       'episode': episode,
       'created': created.toIso8601String(),
-    }
+    };
   }
 }
