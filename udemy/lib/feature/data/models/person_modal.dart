@@ -2,8 +2,8 @@ import 'package:udemy/feature/domain/entities/person_entity.dart';
 
 import 'location_modal.dart';
 
-class PersonModal extends PersonEntity {
-  PersonModal({
+class PersonModel extends PersonEntity {
+  PersonModel({
     required id,
     required name,
     required status,
@@ -29,8 +29,8 @@ class PersonModal extends PersonEntity {
       created: created,
   );
 
-  factory PersonModal.fromJson(Map<String, dynamic> json) {
-    return PersonModal(
+  factory PersonModel.fromJson(Map<String, dynamic> json) {
+    return PersonModel(
     id: json['id'],
     name: json['name'],
     status: json['status'],

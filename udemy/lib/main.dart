@@ -4,8 +4,8 @@ import 'package:udemy/feature/presentation/block/person_list_cuit/person_list_cu
 import 'package:udemy/feature/presentation/block/search_bloc/search_bloc.dart';
 import 'package:udemy/locator_service.dart' as di;
 
+import 'common/app_colors.dart';
 import 'feature/presentation/pages/person_screan.dart';
-import 'locator_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +19,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
-      BlocProvider<PersonListCubit>(create: (context) => sl<PersonListCubit>()),
-      BlocProvider<PersonSearchBloc>(create: (context) => sl<PersonSearchBloc>()),
+      BlocProvider<PersonListCubit>(create: (context) => di.sl<PersonListCubit>()..loadPerson()),
+      BlocProvider<PersonSearchBloc>(create: (context) => di.sl<PersonSearchBloc>()),
     ], child: MaterialApp(
-      theme: ThemeData.dark().copyWith(backgroundColor: Colors.black, scaffoldBackgroundColor: Colors.grey),
+      theme: ThemeData.dark().copyWith(backgroundColor: AppColors.mainBackground, scaffoldBackgroundColor: AppColors.mainBackground),
       home: HomePage(),
     ));
   }

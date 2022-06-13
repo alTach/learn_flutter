@@ -5,8 +5,8 @@ import 'package:udemy/feature/data/models/person_modal.dart';
 import 'package:http/http.dart' as http;
 
 abstract class PersonRemoteDataSource {
-  Future<List<PersonModal>> getAllPersons(int page);
-  Future<List<PersonModal>> searchPersons(String query);
+  Future<List<PersonModel>> getAllPersons(int page);
+  Future<List<PersonModel>> searchPersons(String query);
 }
 
 class PersonRemoteDataSourceImp extends PersonRemoteDataSource {
@@ -14,17 +14,17 @@ class PersonRemoteDataSourceImp extends PersonRemoteDataSource {
   PersonRemoteDataSourceImp({required this.client});
 
   @override
-  Future<List<PersonModal>> getAllPersons(int page) => _getPersonFromUrl('https://rickandmortyapi.com/api/character?page=$page');
+  Future<List<PersonModel>> getAllPersons(int page) => _getPersonFromUrl('https://rickandmortyapi.com/api/character?page=$page');
 
   @override
-  Future<List<PersonModal>> searchPersons(String query) => _getPersonFromUrl('https://rickandmortyapi.com/api/character?name=$query');
+  Future<List<PersonModel>> searchPersons(String query) => _getPersonFromUrl('https://rickandmortyapi.com/api/character?name=$query');
 
-  Future<List<PersonModal>> _getPersonFromUrl(String url) async {
+  Future<List<PersonModel>> _getPersonFromUrl(String url) async {
     print(url);
     final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       final persons = jsonDecode(response.body);
-      return (persons['results'] as List).map((person) => PersonModal.fromJson(person)).toList();
+      return (persons['results'] as List).map((person) => PersonModel.fromJson(person)).toList();
     } else {
       throw ServerException();
     }

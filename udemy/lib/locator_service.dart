@@ -17,11 +17,17 @@ import 'package:http/http.dart' as http;
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // Bloc /Cubit
-  sl.registerFactory(() => PersonListCubit(getAllPersons: sl()),);
+  // External
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() async => sharedPreferences);
+  sl.registerLazySingleton(() => http.Client());
+  sl.registerLazySingleton(() => InternetConnectionChecker());
+
+  // BLoC / Cubit
+  sl.registerFactory(() => PersonListCubit(getAllPersons: sl<GetAllPersons>()),);
   sl.registerFactory(() => PersonSearchBloc(searchPerson: sl()),);
 
-  // Use case
+  // UseCases
   sl.registerLazySingleton(() => GetAllPersons(sl()));
   sl.registerLazySingleton(() => SearchPerson(sl()));
 
@@ -29,17 +35,11 @@ Future<void> init() async {
   sl.registerLazySingleton<PersonRepository>(() => PersonRepositoryImpl(
       remoteDataSource: sl(),
       localDataSource: sl(),
-      networkInfo: sl()
+      networkInfo: sl(),
   ));
   sl.registerLazySingleton<PersonRemoteDataSource>(() => PersonRemoteDataSourceImp(client: http.Client()));
   sl.registerLazySingleton<PersonLocalDataSource>(() => PersonLocalDataSourceIml(sharedPreferences: sl()));
 
   // Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
-
-  // External
-  final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerLazySingleton(() async => sharedPreferences);
-  sl.registerLazySingleton(() => http.Client());
-  sl.registerLazySingleton(() => InternetConnectionChecker());
 }
